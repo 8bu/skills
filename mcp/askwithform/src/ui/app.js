@@ -203,6 +203,11 @@
     root.append(el("h1", "form-title", escapeHtml(message)));
     root.append(el("p", "form-subtitle", "You can close this tab."));
     if (socket) socket.close();
+    // A tab the browser opened for us usually refuses to close itself. Try
+    // anyway; the message above is what the person actually relies on.
+    setTimeout(function () {
+      window.close();
+    }, 500);
   }
 
   // --- transport --------------------------------------------------------
@@ -233,7 +238,18 @@
     socket.addEventListener("close", function () {
       if (finished) return;
       if (statusText) statusText.textContent = "Reconnecting…";
-      setTimeout(connect, 1000);
+      // A finished Ask stops being served at all, so a 404 here means there is
+      // nothing to come back to — reconnecting forever would be a lie.
+      fetch(location.pathname, { cache: "no-store" }).then(
+        function (response) {
+          if (finished) return;
+          if (response.ok) setTimeout(connect, 1000);
+          else done("This form is closed.");
+        },
+        function () {
+          if (!finished) setTimeout(connect, 1000);
+        }
+      );
     });
   }
 

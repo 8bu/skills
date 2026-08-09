@@ -6,7 +6,7 @@ import { FormServer } from "../src/http-server.ts";
 const forms = new FormServer({ abandonGraceMs: 100 });
 forms.start();
 
-afterAll(() => forms.stop());
+afterAll(async () => await forms.stop());
 
 const makeForm = (over: Record<string, unknown> = {}) =>
   validateForm({
@@ -162,6 +162,24 @@ describe("FormServer", () => {
       })
     );
     expect((await second.outcome).kind).toBe("submitted");
+  });
+
+  test("the page is told the Ask is done before the server shuts down", async () => {
+    // Regression: a forced shutdown used to cut the socket before the closing
+    // message flushed, leaving the page reconnecting to a server that was gone.
+    const solo = new FormServer();
+    const ask = solo.open(makeForm());
+    const page = await openPage(ask.url);
+    page.socket.send(
+      JSON.stringify({
+        type: "submit",
+        answers: { ui: { choices: ["Browser"] }, name: { other: "askwithform" } },
+      })
+    );
+
+    await ask.outcome;
+    await solo.stop();
+    expect((await page.next()).type).toBe("done");
   });
 
   test("an unknown or finished Ask is not readable", async () => {

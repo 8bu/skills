@@ -91,8 +91,7 @@ export async function runMcpServer(): Promise<void> {
   );
 
   server.onclose = () => {
-    forms.stop();
-    process.exit(0);
+    void forms.stop().then(() => process.exit(0));
   };
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({

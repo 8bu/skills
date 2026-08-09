@@ -17,6 +17,9 @@ import picoCss from "./ui/vendor/pico.classless.min.css" with { type: "text" };
 /** A closed tab gets this long to come back before the Ask is Abandoned. */
 export const ABANDON_GRACE_MS = 30_000;
 
+/** How long a shutdown waits for pages to receive their closing message. */
+const SHUTDOWN_GRACE_MS = 1_000;
+
 const PAGE = (htmlShell as unknown as string)
   .replace("/*!PICO*/", () => picoCss)
   .replace("/*!APP_CSS*/", () => appCss)
@@ -111,9 +114,17 @@ export class FormServer {
     return { id, url: `${this.origin}/form/${id}`, outcome };
   }
 
-  stop(): void {
-    this.server?.stop(true);
+  /**
+   * Shuts the server down without cutting pages off mid-sentence. Each page has
+   * already been sent its closing message and asked to disconnect; this waits
+   * for that to land, then stops waiting on any tab that has gone quiet.
+   */
+  async stop(): Promise<void> {
+    const server = this.server;
+    if (!server) return;
     this.server = null;
+    await Promise.race([server.stop(), Bun.sleep(SHUTDOWN_GRACE_MS)]);
+    await server.stop(true);
   }
 
   // --- HTTP -------------------------------------------------------------
@@ -213,7 +224,7 @@ export class FormServer {
     for (const ws of state.sockets) {
       try {
         ws.send(JSON.stringify({ type: "done", outcome: outcome.kind }));
-        ws.close();
+        ws.close(1000, "ask complete");
       } catch {
         // The page is already gone; the Outcome stands either way.
       }

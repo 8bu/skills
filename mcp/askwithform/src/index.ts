@@ -34,8 +34,9 @@ async function serveOnce(path: string): Promise<number> {
   openBrowser(ask.url);
 
   const outcome = await ask.outcome;
+  // Stop before printing so the page has its closing message in hand.
+  await forms.stop();
   console.log(renderOutcome(form, outcome));
-  forms.stop();
   return outcome.kind === "submitted" ? 0 : 1;
 }
 

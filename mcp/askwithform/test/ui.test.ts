@@ -223,6 +223,36 @@ describe("the page", () => {
     expect(root().querySelectorAll(".question")).toHaveLength(0);
   });
 
+  test("stops reconnecting once the Ask is no longer served", async () => {
+    // Regression: the page used to retry forever against a finished Ask, so it
+    // sat on "Reconnecting…" after the answers had already been delivered.
+    const original = globalThis.fetch;
+    globalThis.fetch = (async () => new Response("gone", { status: 404 })) as unknown as typeof fetch;
+    try {
+      const socket = mount(simpleForm);
+      socket.close();
+      await Bun.sleep(10);
+      expect(root().textContent).toContain("This form is closed.");
+      expect(root().querySelectorAll(".question")).toHaveLength(0);
+    } finally {
+      globalThis.fetch = original;
+    }
+  });
+
+  test("keeps reconnecting while the Ask is still open", async () => {
+    const original = globalThis.fetch;
+    globalThis.fetch = (async () => new Response("ok", { status: 200 })) as unknown as typeof fetch;
+    try {
+      const socket = mount(simpleForm);
+      socket.close();
+      await Bun.sleep(10);
+      expect(root().querySelector(".status")!.textContent).toBe("Reconnecting…");
+      expect(root().querySelectorAll(".question")).toHaveLength(2);
+    } finally {
+      globalThis.fetch = original;
+    }
+  });
+
   test("surfaces a server error without ending the Ask", () => {
     const socket = mount(simpleForm);
     socket.receive({ type: "error", message: "Question \"name\" has no Answer" });
