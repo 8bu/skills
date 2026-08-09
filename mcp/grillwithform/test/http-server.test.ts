@@ -4,7 +4,7 @@ import { validateForm, type Outcome } from "../src/domain.ts";
 import { FormServer } from "../src/http-server.ts";
 
 const forms = new FormServer({ abandonGraceMs: 100 });
-forms.start();
+await forms.start();
 
 afterAll(async () => await forms.stop());
 
@@ -44,7 +44,7 @@ async function openPage(url: string) {
 
 describe("FormServer", () => {
   test("serves the page and pushes the Form over the WebSocket", async () => {
-    const ask = forms.open(makeForm());
+    const ask = await forms.open(makeForm());
 
     const response = await fetch(ask.url);
     const html = await response.text();
@@ -63,7 +63,7 @@ describe("FormServer", () => {
   });
 
   test("returns Submitted Answers when the page submits", async () => {
-    const ask = forms.open(makeForm());
+    const ask = await forms.open(makeForm());
     const page = await openPage(ask.url);
 
     page.socket.send(
@@ -87,7 +87,7 @@ describe("FormServer", () => {
   });
 
   test("keeps the Ask open and reports back when a submit is incomplete", async () => {
-    const ask = forms.open(makeForm());
+    const ask = await forms.open(makeForm());
     const page = await openPage(ask.url);
 
     page.socket.send(
@@ -108,7 +108,7 @@ describe("FormServer", () => {
   });
 
   test("Cancel ends the Ask with no Answers", async () => {
-    const ask = forms.open(makeForm());
+    const ask = await forms.open(makeForm());
     const page = await openPage(ask.url);
     page.socket.send(JSON.stringify({ type: "cancel" }));
 
@@ -117,7 +117,7 @@ describe("FormServer", () => {
   });
 
   test("a closed tab that does not come back is Abandoned", async () => {
-    const ask = forms.open(makeForm());
+    const ask = await forms.open(makeForm());
     const page = await openPage(ask.url);
     page.socket.close();
 
@@ -125,7 +125,7 @@ describe("FormServer", () => {
   });
 
   test("a reconnect within the grace period keeps the Ask alive", async () => {
-    const ask = forms.open(makeForm());
+    const ask = await forms.open(makeForm());
     const first = await openPage(ask.url);
     first.socket.close();
     await Bun.sleep(30);
@@ -139,13 +139,13 @@ describe("FormServer", () => {
   });
 
   test("timeoutSeconds ends the Ask as Abandoned", async () => {
-    const ask = forms.open(makeForm({ timeoutSeconds: 0.1 }));
+    const ask = await forms.open(makeForm({ timeoutSeconds: 0.1 }));
     expect(await ask.outcome).toEqual({ kind: "abandoned" });
   });
 
   test("concurrent Asks share the one server and stay separate", async () => {
-    const first = forms.open(makeForm());
-    const second = forms.open(makeForm());
+    const first = await forms.open(makeForm());
+    const second = await forms.open(makeForm());
     expect(new URL(first.url).port).toBe(new URL(second.url).port);
     expect(first.id).not.toBe(second.id);
 
@@ -169,7 +169,7 @@ describe("FormServer", () => {
     // Regression: a forced shutdown used to cut the socket before the closing
     // message flushed, leaving the page reconnecting to a server that was gone.
     const solo = new FormServer();
-    const ask = solo.open(makeForm());
+    const ask = await solo.open(makeForm());
     const page = await openPage(ask.url);
     page.socket.send(
       JSON.stringify({
@@ -187,7 +187,7 @@ describe("FormServer", () => {
     expect((await fetch(`${forms.origin}/form/nope`)).status).toBe(404);
     expect((await fetch(`${forms.origin}/`)).status).toBe(404);
 
-    const ask = forms.open(makeForm());
+    const ask = await forms.open(makeForm());
     const page = await openPage(ask.url);
     page.socket.send(JSON.stringify({ type: "cancel" }));
     await ask.outcome;

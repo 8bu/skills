@@ -1,21 +1,43 @@
 {
   "name": "grillwithform",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.1.2",
+  "description": "An MCP server. It shows a form of questions to a person in their browser and returns the answers.",
+  "keywords": ["mcp", "mcp-server", "claude", "form", "prompt", "ai"],
+  "license": "MIT",
+  "author": {
+    "name": "8bu",
+    "email": "8bu@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/8bu/skills/tree/main/mcp/grillwithform#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/8bu/skills.git",
+    "directory": "mcp/grillwithform"
+  },
+  "bugs": "https://github.com/8bu/skills/issues",
   "type": "module",
-  "module": "src/index.ts",
+  "bin": {
+    "grillwithform": "dist/grillwithform.js"
+  },
+  "files": ["dist", "README.md"],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "build": "bun build --compile --minify src/index.ts --outfile grillwithform",
+    "build": "bun build --target=node --minify --external @modelcontextprotocol/sdk --external ws src/index.ts --outfile dist/grillwithform.js && chmod +x dist/grillwithform.js",
     "start": "bun run src/index.ts",
     "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run typecheck && bun test && bun run build"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0"
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.11.2",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/ws": "^8.18.1"
   },
   "peerDependencies": {
     "typescript": "^5"

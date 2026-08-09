@@ -1,14 +1,16 @@
 # MCP servers
 
-Skills are documentation; anything that runs lives here. One directory per server,
-`mcp/<name>/`, each self-contained with its own `package.json`, dependencies and tests.
+Skills are documents. All code that runs is in this directory.
 
-There is deliberately no workspace tooling — no root `package.json`, no shared lockfile.
-A second server would earn that; one does not.
+Each server has its own folder, `mcp/<name>/`. Each folder is independent: it has its own
+`package.json`, its own dependencies, and its own tests. There is no workspace tooling, no
+root `package.json`, and no shared lock file. One server does not need them. A second server
+can add them later.
 
-A server that has an accompanying skill keeps the skill in `skills/<name>/SKILL.md`, where
-it documents the calling convention rather than the implementation.
+Some servers have a skill. The skill is in `skills/<name>/SKILL.md`. The skill tells the
+agent how to call the server. It does not describe the code. The `README.md` of the server
+describes the code.
 
-| Server | What it does |
-| --- | --- |
-| [`grillwithform`](grillwithform/) | Asks a person a form of questions in their browser and returns the answers as markdown. |
+| Server | Function | Package |
+| --- | --- | --- |
+| [`grillwithform`](grillwithform/) | Shows a form of questions to a person in their browser. Returns the answers as markdown. | [`grillwithform`](https://www.npmjs.com/package/grillwithform) |

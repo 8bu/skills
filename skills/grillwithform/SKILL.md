@@ -1,36 +1,40 @@
 ---
 name: grillwithform
-description: "Put a whole round of questions to the person as a browser form via the grill_with_form MCP tool, and read the answers back. Use when the user asks for a form (\"put that in a form\", /grillwithform), or when a grilling-style round produces several questions at once. Not for one or two quick questions."
+description: "Shows a full set of questions to the person as a browser form with the grill_with_form MCP tool, then reads the answers back. Use it when the user asks for a form (\"put that in a form\", /grillwithform), or when a grilling session produces several questions at the same time. Do not use it for one or two quick questions."
 ---
 
-# grillwithform — ask a whole round of questions at once
+# grillwithform — ask a full set of questions at one time
 
-`grill_with_form` opens a form in the person's browser, waits, and returns their answers as
-markdown. Unlimited questions, all mandatory, one Submit: either every answer comes back or
-none does.
+The tool `grill_with_form` opens a form in the browser of the person. It waits. Then it
+returns the answers as markdown.
 
-Vocabulary is in `CONTEXT.md`. The server lives in `mcp/grillwithform/`.
+A form can hold any number of questions. The person must answer each question. There is one
+Submit button. You get all of the answers, or you get none of them.
 
-## When to use
+The words this tool uses are in `CONTEXT.md`. The server is in `mcp/grillwithform/`.
 
-Use it when **a whole round of questions already exists at once**:
+## When to use it
 
-- The user asks for one — "put that in a form", "give me a form", `/grillwithform`.
-- A grilling, brainstorming, or spec-gathering round has produced several open questions
-  together. A round of grilling *is* a form; send it as one.
-- More than a couple of questions, or options whose text is long enough to want reading
-  rather than skimming — descriptions, code spans, links.
+Use this tool when you already have a full set of questions. For example:
 
-## When not to use
+- The user asks for a form. The user says "put that in a form", "give me a form", or types
+  `/grillwithform`.
+- A grilling session, a brainstorm, or a specification review gives you several open
+  questions at the same time. Send them as one form.
+- You have more than two questions.
+- Your options have long text, descriptions, code, or links. The person must read them
+  carefully.
 
-- One or two quick questions mid-task. Ask in the conversation. Opening a browser window
-  unasked is obnoxious.
-- Anything the codebase, the git history, or a file can answer. Look first.
-- A decision that is yours to make. Make it and say what you assumed.
+## When not to use it
+
+- You have one or two short questions in the middle of a task. Ask in the conversation. Do
+  not open a browser window if the user does not expect it.
+- The code, the git history, or a file gives the answer. Look there first.
+- The decision is yours. Make the decision. Then tell the user what you assumed.
 
 ## How to call it
 
-One call carries the whole round:
+Send the full set of questions in one call.
 
 ```json
 {
@@ -41,49 +45,53 @@ One call carries the whole round:
       "text": "Where do sessions live?",
       "type": "single",
       "choices": [
-        { "label": "Redis", "description": "Fast, one more thing to run." },
-        { "label": "Postgres", "description": "One less moving part; slower reads." }
+        { "label": "Redis", "description": "It is fast. You must run one more service." },
+        { "label": "Postgres", "description": "There is one less service. Reads are slower." }
       ]
     },
     {
       "id": "must-have",
-      "text": "Which of these are must-haves for v1?",
+      "text": "Which of these must v1 include?",
       "type": "multi",
       "choices": [{ "label": "SSO" }, { "label": "2FA" }, { "label": "Audit log" }]
     },
-    { "id": "deadline", "text": "Anything else forcing the shape of this?", "type": "single", "choices": [] }
+    { "id": "deadline", "text": "What else controls the shape of this work?", "type": "single", "choices": [] }
   ]
 }
 ```
 
-- `id` — short and meaningful; it labels the answer you get back.
-- `type` — `single` for at most one choice, `multi` for any number.
-- `choices` — leave empty for a question that is purely free text.
-- `allowOther` — free text alongside the choices, on by default. Set it false only when the
-  choices are genuinely exhaustive.
-- `timeoutSeconds` — omit it. Wait for as long as the person takes.
+Use the fields as follows:
 
-Write the choices as real positions with real trade-offs, not as a survey. A description
-earns its place when it says what picking that option costs.
+- `id` — keep it short and clear. It labels the answer that comes back.
+- `type` — use `single` for one choice at most. Use `multi` for any number of choices.
+- `choices` — leave this list empty for a free-text question.
+- `allowOther` — shows a free-text box with the choices. The default is true. Set it to
+  false only if your choices cover every possible answer.
+- `timeoutSeconds` — omit this field. Let the person take the time they need.
 
-## Reading the result
+Write each choice as a real position with a real cost. Do not write a survey. Add a
+description when it tells the person what that choice costs.
 
-Three outcomes:
+## How to read the result
 
-- **Submitted** — every question answered. The markdown lists them; only what was chosen is
-  echoed. Treat free text as the more specific answer when it sits alongside a choice.
-- **Cancelled** — the person declined. Do not re-send the form. Ask what to do instead, or
-  proceed under a stated assumption.
-- **Abandoned** — they left without deciding. Same response as Cancelled, but no refusal was
-  made, so it is fair to check whether the form was seen at all.
+An ask ends in one of three outcomes.
 
-Never guess a missing answer: partial answers are never returned, so anything absent was
-never asked well enough.
+- **Submitted** — the person answered each question. The markdown lists the answers. It
+  shows only what the person selected or wrote. If a question has both a choice and free
+  text, the free text is the more exact answer.
+- **Cancelled** — the person refused to answer. Do not send the form again. Ask the user
+  what to do, or continue and state your assumption.
+- **Abandoned** — the person left and did not decide. Respond as you do for Cancelled. The
+  person did not refuse, so you can ask if they saw the form.
+
+Never guess an answer that is not there. The tool never returns a part of a form. If an
+answer is absent, your question was not clear enough.
 
 ## Notes
 
-- The tool rejects a bad form before anything renders — duplicate ids, zero questions, or a
-  question with no choices and no Other. The error says what to fix; fix it and call again.
-- The browser opens on its own, and the URL is also printed to stderr if it does not.
-- Nothing leaves the machine: the server binds to `127.0.0.1` and the page has no external
-  assets.
+- The tool rejects a bad form before it shows anything. These faults are rejected: two
+  questions with the same `id`, a form with no questions, and a question with no choices and
+  no free-text box. The error message tells you what to correct. Correct it and call again.
+- The browser opens by itself. If it does not open, the tool prints the URL to stderr.
+- No data leaves the machine. The server listens on `127.0.0.1`. The page loads nothing from
+  the network.

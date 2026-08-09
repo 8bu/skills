@@ -1,3 +1,6 @@
 .DS_Store
 *.swp
 *~
+
+# Internal design notes and decision records. Not for the public repo.
+docs/

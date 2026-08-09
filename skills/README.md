@@ -1,10 +1,10 @@
 # skills
 
-One folder per skill. Each folder has a `SKILL.md` with frontmatter.
+One folder for each skill. Each folder has a `SKILL.md` file with frontmatter.
 
-| Skill | Mô tả |
+| Skill | Function |
 |---|---|
-| [`grillwithform`](grillwithform/SKILL.md) | Hỏi cả một vòng câu hỏi bằng form trên trình duyệt, qua MCP `grill_with_form`. Gõ `/grillwithform`. |
-| [`stv`](stv/SKILL.md) | Viết/rà tài liệu KHMT tiếng Việt theo chuẩn TVKTĐGH/KHMT. Gõ `/stv`. |
+| [`grillwithform`](grillwithform/SKILL.md) | Shows a full set of questions as a form in the browser. Type `/grillwithform`. |
+| [`stv`](stv/SKILL.md) | Writes and checks Vietnamese computer-science documents against the TVKTĐGH/KHMT standard. Type `/stv`. |
 
-Thêm skill mới: copy `../templates/SKILL.template.md`.
+To add a skill, copy `../templates/SKILL.template.md`.

@@ -1,37 +1,32 @@
 # grillwithform
 
-An MCP server that puts a form of questions in front of a person in their browser and hands
-the answers back to the assistant as markdown.
+An MCP server. It shows a form of questions to a person in their browser. It gives the
+answers back to the assistant as markdown.
 
-Unlimited questions, every one of them mandatory, one Submit. Either all the answers come
-back or none do.
+A form can hold any number of questions. The person must answer each question. There is one
+Submit button. You get all of the answers, or you get none of them.
 
-See [`../../CONTEXT.md`](../../CONTEXT.md) for the vocabulary (Ask, Form, Question, Choice,
-Other, Answer, Outcome) and [`../../docs/grillwithform-design.md`](../../docs/grillwithform-design.md)
-for the design this implements.
+For the words this server uses, read
+[`CONTEXT.md`](https://github.com/8bu/skills/blob/main/CONTEXT.md): Ask, Form, Question,
+Choice, Other, Answer, and Outcome.
 
-## Build
-
-```sh
-bun install
-bun test
-bun run build        # → ./grillwithform, a single self-contained binary
-```
-
-## Register with Claude Code
+## Install
 
 ```sh
-claude mcp add grillwithform -- /absolute/path/to/mcp/grillwithform/grillwithform mcp
+claude mcp add grillwithform -- npx -y grillwithform mcp
 ```
+
+You must have Node 20 or later. You do not need to build or clone anything.
 
 ## Run one form without an MCP client
 
 ```sh
-./grillwithform serve form.json
+npx -y grillwithform serve form.json
 ```
 
-Same server code, in-process. The answers print to stdout as markdown; the exit status is
-`0` when the form was Submitted and `1` otherwise.
+This command runs the same server code in the same process. It prints the answers to stdout
+as markdown. The exit status is `0` if the person submits the form. For each other result,
+the exit status is `1`.
 
 ```json
 {
@@ -42,7 +37,7 @@ Same server code, in-process. The answers print to stdout as markdown; the exit 
       "text": "Where does the UI render?",
       "type": "single",
       "choices": [
-        { "label": "Browser", "description": "A real page, readable at length." },
+        { "label": "Browser", "description": "A real page. You can read long text on it." },
         { "label": "Terminal" }
       ]
     },
@@ -51,25 +46,34 @@ Same server code, in-process. The answers print to stdout as markdown; the exit 
 }
 ```
 
+To stop the server from opening a browser, set `GRILLWITHFORM_NO_BROWSER=1`. The server
+always prints the URL to stderr.
+
 ## The tool
 
-`grill_with_form` takes:
+The tool `grill_with_form` accepts these fields.
 
 | Field | Meaning |
 | --- | --- |
-| `title` | What the round of questions is about. |
-| `questions[].id` | Short unique key; labels the answer that comes back. |
-| `questions[].text` | The question. May use `` `code` ``, `**bold**` and links. |
-| `questions[].type` | `single` (at most one choice) or `multi` (any number). |
-| `questions[].choices` | Pre-written options, each a `label` and optional `description`. May be empty. |
-| `questions[].allowOther` | Free-text alongside the choices. Defaults to true. |
-| `timeoutSeconds` | Give up waiting after this long. Omit to wait indefinitely. |
+| `title` | The subject of this set of questions. |
+| `questions[].id` | A short unique key. It labels the answer that comes back. |
+| `questions[].text` | The question. It can contain `` `code` ``, `**bold**`, and links. |
+| `questions[].type` | `single` for one choice at most. `multi` for any number of choices. |
+| `questions[].choices` | The options you write. Each one has a `label` and an optional `description`. The list can be empty. |
+| `questions[].allowOther` | Shows a free-text box with the choices. The default is true. |
+| `timeoutSeconds` | Stops the ask after this time. Omit this field to wait with no limit. |
 
-A form is validated before anything renders. Duplicate ids, zero questions, and a question
-that is unanswerable (no choices and no Other) are rejected with a message the assistant can
-act on. Nothing is auto-repaired, so a broken form never reaches the person.
+The server checks the form before it shows anything. It rejects these three faults:
 
-The answers come back per question, echoing only what was chosen:
+- two questions with the same `id`
+- a form with no questions
+- a question that nobody can answer, because it has no choices and no free-text box
+
+The server does not repair a bad form. It returns a message that tells the assistant what to
+correct. A bad form never gets to the person.
+
+The answers come back one line for each question. The server shows only what the person
+selected or wrote.
 
 ```markdown
 # Ask: grillwithform
@@ -78,19 +82,40 @@ The answers come back per question, echoing only what was chosen:
 - **[name]** What should it be called? → *other:* "grillwithform"
 ```
 
-Cancelling, or closing the tab and not coming back within 30 seconds, ends the ask with a
-one-line body and no answers.
+The ask can also end in two other ways. The person can click Cancel. The person can also
+close the tab and not come back in 30 s. Each of these results gives one line of text and no
+answers.
 
 ## How it runs
 
-One long-lived HTTP server on an ephemeral port bound to `127.0.0.1`, shared by every
-concurrent ask. Each ask lives at `/form/<unguessable id>` so no other process on the machine
-can read a form it was not given. A WebSocket carries the live state.
+One HTTP server runs for a long time. It listens on `127.0.0.1` and on a free port. All
+concurrent asks share this one server.
 
-The page is hand-written CSS on shadcn/ui's token palette plus ~200 lines of vanilla JS, all
-inlined into the binary. No Tailwind and no CSS framework; nothing is fetched, so it works
-offline and no third party ever sees a form. Light and dark follow the OS setting. Question and
-choice text is escaped before a small markdown subset is applied, so no unescaped assistant
-output reaches the DOM.
+Each ask has its own address, `/form/<random id>`. The server makes the id from 16 random
+bytes. Another program on the same machine cannot guess the id, so it cannot read a form.
 
-Set `GRILLWITHFORM_NO_BROWSER=1` to skip opening a browser; the URL is always printed to stderr.
+A WebSocket carries the live state between the page and the server. If the tab closes and
+does not come back in 30 s, the ask ends with the outcome Abandoned. The server never waits
+for a signal that cannot come.
+
+The page uses hand-written CSS on the shadcn/ui token palette, and approximately 290 lines
+of plain JavaScript. The build puts the CSS and the JavaScript into the bundle. The page
+uses no Tailwind and no CSS framework. It loads nothing from the network, so it works
+offline and no other party sees a form. The page follows the light or dark setting of the
+operating system.
+
+The page escapes all text from the assistant. Then it applies a small subset of markdown.
+No text from the assistant reaches the DOM without an escape first.
+
+## Develop
+
+```sh
+bun install
+bun test             # unit, integration, DOM, and the Node bundle end to end
+bun run typecheck
+bun run build        # → dist/grillwithform.js, the file that npm publishes
+```
+
+Bun runs and bundles the TypeScript source, but the result runs on Node. The build imports
+the CSS and the JavaScript of the page as text, so they go into the one output file. The
+packages `ws` and `@modelcontextprotocol/sdk` stay external. npm installs them.

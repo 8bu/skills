@@ -1,56 +1,57 @@
 # Context
 
-Ubiquitous language for this repo. Glossary only — no implementation detail.
+The words this repository uses, and their meanings. This document gives the meanings only.
+It does not describe the code.
 
 ## Ask
 
-One complete round trip between an assistant and a person. An Ask begins when the
-assistant presents a Form and ends in exactly one Outcome. An Ask is never partially
-complete: it is open, or it has an Outcome.
+One complete exchange between an assistant and a person. An Ask starts when the assistant
+shows a Form. It ends in one Outcome. An Ask is never partly complete. It is open, or it has
+an Outcome.
 
 ## Form
 
-The ordered set of Questions presented in a single Ask. A Form has a title.
+The ordered set of Questions in one Ask. A Form has a title.
 
 ## Question
 
-One item in a Form. A Question carries the text put to the person, and zero or more
-Choices. A Question with zero Choices is answered entirely through its Other.
+One item in a Form. A Question holds the text for the person. It also holds zero or more
+Choices. The person answers a Question that has zero Choices through its Other.
 
-Every Question in a Form must be answered before the Form can be Submitted.
+The person must answer each Question in a Form before they can submit it.
 
 ## Choice
 
-One pre-written option belonging to a Question. A Choice has a label and may carry a
-description that expands on the label. Choices are authored by the assistant; the person
-selects among them.
+One option that belongs to a Question. A Choice has a label. It can also have a description
+that gives more information about the label. The assistant writes the Choices. The person
+selects from them.
 
-A Question is either **single-select** (at most one Choice) or **multi-select** (any
-number of Choices).
+A Question is **single-select** or **multi-select**. In a single-select Question, the person
+selects one Choice at most. In a multi-select Question, the person selects any number of
+Choices.
 
 ## Other
 
-The free-text portion of a Question, always available alongside its Choices unless the
-Question opts out. Other exists so a person is never forced to pick a Choice that
-misrepresents them.
+The free-text part of a Question. It is available with the Choices, unless the Question
+refuses it. Other exists so that no person must select a Choice that is wrong for them.
 
-Other is not a Choice — it is a second, parallel way to answer the same Question. A
-person may answer with Choices, with Other, or with both.
+Other is not a Choice. It is a second, parallel way to answer the same Question. A person
+can answer with Choices, with Other, or with both.
 
 ## Answer
 
-What one person supplies for one Question: the Choices they selected, the Other text
-they wrote, or both. An Answer is present when at least one of the two is non-empty.
+What one person gives for one Question: the Choices they selected, the Other text they
+wrote, or both. An Answer exists when one part or both parts hold content.
 
 ## Outcome
 
-How an Ask ended. Exactly one of:
+How an Ask ended. An Ask has one of these three Outcomes:
 
-- **Submitted** — the person answered every Question and confirmed. The assistant
-  receives the Answers.
-- **Cancelled** — the person explicitly declined to answer. The assistant receives no
-  Answers and is told the person chose not to answer.
-- **Abandoned** — the person left without deciding. Indistinguishable from Cancelled in
-  intent, distinguished in reporting so the assistant knows no explicit refusal occurred.
+- **Submitted** — the person answered each Question and confirmed. The assistant receives
+  the Answers.
+- **Cancelled** — the person refused to answer. The assistant receives no Answers. The
+  assistant learns that the person made this choice.
+- **Abandoned** — the person left and did not decide. The intention is the same as
+  Cancelled. The report is different, so the assistant knows that no refusal occurred.
 
-Partial Answers are never returned under any Outcome.
+No Outcome returns a part of the Answers.

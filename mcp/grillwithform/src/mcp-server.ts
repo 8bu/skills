@@ -124,7 +124,7 @@ export async function runMcpServer(): Promise<void> {
       return { isError: true, content: [{ type: "text", text }] };
     }
 
-    const ask = forms.open(form);
+    const ask = await forms.open(form);
     console.error(`grillwithform: waiting on ${ask.url}`);
     openBrowser(ask.url);
 

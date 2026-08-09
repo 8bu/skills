@@ -1,9 +1,21 @@
 {
-  "name": "long-skills",
-  "version": "0.1.0",
-  "description": "Long Nguyen's personal Claude skills.",
+  "name": "8bu-skills",
+  "displayName": "8bu Skills",
+  "version": "0.1.2",
+  "description": "Shows a full set of questions as a form in your browser. Also writes Vietnamese computer-science documents to the TVKTĐGH/KHMT standard.",
   "author": {
-    "name": "Long Nguyen",
-    "email": "hvanlong@pm.me"
+    "name": "8bu",
+    "email": "8bu@users.noreply.github.com",
+    "url": "https://github.com/8bu"
+  },
+  "homepage": "https://github.com/8bu/skills#readme",
+  "repository": "https://github.com/8bu/skills",
+  "license": "MIT",
+  "keywords": ["form", "questions", "mcp", "vietnamese", "documentation", "ste"],
+  "mcpServers": {
+    "grillwithform": {
+      "command": "npx",
+      "args": ["-y", "grillwithform", "mcp"]
+    }
   }
 }

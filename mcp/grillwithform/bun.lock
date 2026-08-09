@@ -6,10 +6,12 @@
       "name": "grillwithform",
       "dependencies": {
         "@modelcontextprotocol/sdk": "^1.30.0",
+        "ws": "^8.21.3",
       },
       "devDependencies": {
         "@happy-dom/global-registrator": "^20.11.2",
         "@types/bun": "latest",
+        "@types/ws": "^8.18.1",
       },
       "peerDependencies": {
         "typescript": "^5",
