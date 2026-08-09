@@ -72,32 +72,60 @@
     refresh();
   }
 
+  // A Question is a fieldset: its Choices are one group of controls under one
+  // legend, which is what a screen reader needs to read them as a set.
   function renderQuestion(q) {
-    var article = el("article", "question");
-    article.append(el("div", "question-text", md(q.text)));
+    var fieldset = el("fieldset", "question");
+    var legend = el("legend", "question-text", md(q.text));
+    fieldset.append(legend);
 
     if (q.choices.length > 0) {
-      article.append(
-        el(
-          "div",
-          "question-hint",
-          q.type === "single" ? "Pick one." : "Pick any number."
-        )
+      var hint = el(
+        "p",
+        "question-hint",
+        q.type === "single" ? "Pick one." : "Pick any number."
       );
+      hint.id = "q-" + q.id + "-hint";
+      fieldset.append(hint);
+
       var choices = el("div", "choices");
+      choices.setAttribute("aria-describedby", hint.id);
       q.choices.forEach(function (choice, i) {
         choices.append(renderChoice(q, choice, i));
       });
-      article.append(choices);
+      fieldset.append(choices);
     }
 
-    if (q.allowOther) article.append(renderOther(q));
-    return article;
+    if (q.allowOther) fieldset.append(renderOther(q));
+    return fieldset;
+  }
+
+  // One field: a label, the control it names, and an optional line under it.
+  // Label and control are siblings — nesting the control inside the label is
+  // what collapsed the gap between them.
+  function field(id, labelText, control, description) {
+    var wrap = el("div", "field");
+
+    var label = el("label", "field-label");
+    label.htmlFor = id;
+    label.textContent = labelText;
+
+    control.id = id;
+    control.classList.add("field-control");
+
+    wrap.append(label, control);
+    if (description) {
+      var note = el("p", "field-description", escapeHtml(description));
+      note.id = id + "-description";
+      control.setAttribute("aria-describedby", note.id);
+      wrap.append(note);
+    }
+    return wrap;
   }
 
   function renderChoice(q, choice, index) {
-    var wrap = el("div", "choice");
-    var label = document.createElement("label");
+    // The whole row is the label, so the description is part of the target.
+    var label = el("label", "choice");
     var input = document.createElement("input");
     input.type = q.type === "single" ? "radio" : "checkbox";
     input.name = "q-" + q.id;
@@ -117,33 +145,34 @@
       refresh();
     });
 
-    label.append(input, document.createTextNode(" "));
-    var text = el("span", null, md(choice.label));
-    label.append(text);
-    wrap.append(label);
-
+    var body = el("span", "choice-body");
+    body.append(el("span", "choice-label", md(choice.label)));
     if (choice.description) {
-      wrap.append(el("small", "choice-description", md(choice.description)));
+      body.append(el("span", "choice-description", md(choice.description)));
     }
-    return wrap;
+
+    label.append(input, body);
+    return label;
   }
 
   function renderOther(q) {
-    var wrap = el("div", "other-field");
-    var label = document.createElement("label");
-    label.htmlFor = "q-" + q.id + "-other";
-    label.textContent = q.choices.length > 0 ? "Other / in your own words" : "Your answer";
+    var hasChoices = q.choices.length > 0;
 
     var textarea = document.createElement("textarea");
-    textarea.id = "q-" + q.id + "-other";
     textarea.rows = 2;
+    textarea.placeholder = hasChoices ? "Say it your way…" : "Type your answer…";
     textarea.addEventListener("input", function () {
       state[q.id].other = textarea.value;
       refresh();
     });
 
-    label.append(textarea);
-    wrap.append(label);
+    var wrap = field(
+      "q-" + q.id + "-other",
+      hasChoices ? "Other" : "Your answer",
+      textarea,
+      hasChoices ? "Answer in your own words instead of, or as well as, picking above." : null
+    );
+    wrap.classList.add("other-field");
     return wrap;
   }
 
@@ -155,6 +184,7 @@
 
     submitButton = document.createElement("button");
     submitButton.type = "button";
+    submitButton.className = "primary";
     submitButton.textContent = "Submit";
     submitButton.addEventListener("click", function () {
       send({ type: "submit", answers: collect() });
@@ -162,7 +192,7 @@
 
     var cancel = document.createElement("button");
     cancel.type = "button";
-    cancel.className = "secondary outline";
+    cancel.className = "ghost";
     cancel.textContent = "Cancel";
     cancel.addEventListener("click", function () {
       send({ type: "cancel" });

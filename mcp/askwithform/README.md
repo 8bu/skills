@@ -87,8 +87,9 @@ One long-lived HTTP server on an ephemeral port bound to `127.0.0.1`, shared by 
 concurrent ask. Each ask lives at `/form/<unguessable id>` so no other process on the machine
 can read a form it was not given. A WebSocket carries the live state.
 
-Pico CSS is vendored and inlined into the binary, and the page is ~200 lines of vanilla JS —
-nothing is fetched, so it works offline and no third party ever sees a form. Question and
+The page is hand-written CSS on shadcn/ui's token palette plus ~200 lines of vanilla JS, all
+inlined into the binary. No Tailwind and no CSS framework; nothing is fetched, so it works
+offline and no third party ever sees a form. Light and dark follow the OS setting. Question and
 choice text is escaped before a small markdown subset is applied, so no unescaped assistant
 output reaches the DOM.
 

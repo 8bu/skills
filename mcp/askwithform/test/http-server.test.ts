@@ -50,8 +50,9 @@ describe("FormServer", () => {
     const html = await response.text();
     expect(response.status).toBe(200);
     expect(html).toContain("<title>askwithform</title>");
-    expect(html).toContain("Pico CSS"); // vendored and inlined, no CDN
-    expect(html).not.toContain("http://cdn");
+    // Styles and script are inlined, so the page loads nothing from anywhere.
+    expect(html).toContain("--ring:");
+    expect(html).not.toMatch(/<(link|script|img)[^>]+(src|href)=/);
 
     const page = await openPage(ask.url);
     expect(page.first.type).toBe("form");

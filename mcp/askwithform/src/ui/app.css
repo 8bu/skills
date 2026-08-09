@@ -1,97 +1,402 @@
 /*
+ * Hand-written CSS on shadcn/ui's token palette. No Tailwind, no framework,
+ * no build step — the utility classes are the part we do not need, the design
+ * decisions are the part we do.
+ *
  * Semantic component classes over utility soup, all theming through custom
- * properties. Light and dark come from Pico's own prefers-color-scheme
- * handling — there is no switcher and nothing is persisted.
+ * properties. Light and dark come from prefers-color-scheme; there is no
+ * switcher and nothing is persisted.
  */
 
 :root {
-  --awf-gap: 1.5rem;
-  --awf-question-border: var(--pico-muted-border-color);
-  --awf-description-color: var(--pico-muted-color);
-  --awf-bar-bg: var(--pico-background-color);
+  --radius: 0.625rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+
+    --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.3);
+    --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 0.4), 0 1px 2px -1px oklch(0 0 0 / 0.4);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Apple Color Emoji", sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 main {
-  max-width: 48rem;
+  max-width: 44rem;
+  margin: 0 auto;
 }
 
+/* --- header --------------------------------------------------------- */
+
 .form-title {
-  margin-bottom: 0.25rem;
+  margin: 0 0 0.375rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .form-subtitle {
-  color: var(--awf-description-color);
-  font-size: 0.875rem;
-  margin-bottom: var(--awf-gap);
+  margin: 0 0 2rem;
+  color: var(--muted-foreground);
 }
 
+/* --- a question, as a card ------------------------------------------ */
+
+/* The card is a fieldset, so the browser's own fieldset chrome goes first. */
 .question {
-  border: 1px solid var(--awf-question-border);
-  border-radius: var(--pico-border-radius);
-  padding: 1rem 1.25rem;
-  margin-bottom: var(--awf-gap);
+  min-width: 0;
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 1.25rem;
+  margin: 0 0 1rem;
 }
 
+/* A legend is not a normal block; these four lines make it behave as one. */
 .question-text {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+  display: block;
+  float: none;
+  width: 100%;
+  padding: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.45;
 }
 
 .question-hint {
-  color: var(--awf-description-color);
+  margin: 0.25rem 0 0;
+  color: var(--muted-foreground);
   font-size: 0.8125rem;
-  margin-bottom: 0.75rem;
 }
+
+/* --- choices --------------------------------------------------------- */
 
 .choices {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
 }
 
-.choice > label {
-  margin-bottom: 0;
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.choice:hover {
+  background: var(--accent);
+}
+
+.choice:has(input:checked) {
+  border-color: var(--foreground);
+  background: var(--accent);
+}
+
+.choice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.choice-label {
+  line-height: 1.35;
 }
 
 .choice-description {
-  display: block;
-  color: var(--awf-description-color);
+  color: var(--muted-foreground);
   font-size: 0.8125rem;
-  margin-left: 1.9em;
+  line-height: 1.4;
 }
 
-.other-field > label {
-  color: var(--awf-description-color);
-  font-size: 0.8125rem;
+/* Inputs are redrawn rather than restyled: the native control cannot be
+   given the indicator shadcn uses. */
+.choice input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  margin: 0.125rem 0 0;
+  background: var(--background);
+  border: 1px solid var(--input);
+  box-shadow: var(--shadow-xs);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease;
 }
 
-.other-field textarea {
-  margin-bottom: 0;
+.choice input[type="radio"] {
+  border-radius: 50%;
 }
+
+.choice input[type="checkbox"] {
+  border-radius: 0.25rem;
+}
+
+.choice input:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.choice input[type="radio"]::after {
+  content: "";
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--primary-foreground);
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.choice input[type="radio"]:checked::after {
+  transform: scale(1);
+}
+
+.choice input[type="checkbox"]::after {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--primary-foreground);
+  clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 84% 0, 39% 68%);
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.choice input[type="checkbox"]:checked::after {
+  transform: scale(1);
+}
+
+/* --- fields ----------------------------------------------------------- */
+
+/* A field is a label, the control it names, and an optional line under it.
+   They are siblings, which is where the spacing between them comes from. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-weight: 500;
+  line-height: 1;
+  width: fit-content;
+  cursor: pointer;
+}
+
+.field-description {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+/* The description sits tighter to its control than the label does. */
+.field-control + .field-description {
+  margin-top: -0.125rem;
+}
+
+.field-control {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--input);
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: var(--shadow-xs);
+  font: inherit;
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.field-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+textarea.field-control {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.other-field {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+
+/* A Question answered purely through Other has nothing to sit under. */
+.question > .other-field:nth-child(2) {
+  margin-top: 0.875rem;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* --- submit bar ------------------------------------------------------ */
 
 .submit-bar {
   position: sticky;
   bottom: 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 0;
-  background: var(--awf-bar-bg);
-  border-top: 1px solid var(--awf-question-border);
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 1rem 0 1.25rem;
+  background: color-mix(in oklch, var(--background) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--border);
 }
 
 .submit-bar button {
-  margin-bottom: 0;
-  width: auto;
+  height: 2.25rem;
+  padding: 0 1rem;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    opacity 0.12s ease;
+}
+
+.submit-bar .primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: var(--shadow-xs);
+}
+
+.submit-bar .primary:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--primary) 90%, var(--background));
+}
+
+.submit-bar .primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submit-bar .ghost {
+  background: transparent;
+  color: var(--foreground);
+}
+
+.submit-bar .ghost:hover {
+  background: var(--accent);
 }
 
 .submit-bar .status {
-  color: var(--awf-description-color);
+  margin-left: auto;
+  color: var(--muted-foreground);
   font-size: 0.8125rem;
+  text-align: right;
+}
+
+/* --- shared ---------------------------------------------------------- */
+
+:focus-visible,
+.choice:has(input:focus-visible) {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 45%, transparent);
+}
+
+code {
+  padding: 0.1em 0.35em;
+  background: var(--muted);
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--muted-foreground);
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+strong {
+  font-weight: 600;
 }
 
 .banner {
-  color: var(--pico-del-color);
-  font-size: 0.875rem;
+  color: var(--destructive);
 }

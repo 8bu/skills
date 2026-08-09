@@ -12,7 +12,6 @@ import { normaliseAnswers, ValidationError, type Form, type Outcome } from "./do
 import htmlShell from "./ui/index.html" with { type: "text" };
 import appCss from "./ui/app.css" with { type: "text" };
 import appJs from "./ui/app.js" with { type: "text" };
-import picoCss from "./ui/vendor/pico.classless.min.css" with { type: "text" };
 
 /** A closed tab gets this long to come back before the Ask is Abandoned. */
 export const ABANDON_GRACE_MS = 30_000;
@@ -21,7 +20,6 @@ export const ABANDON_GRACE_MS = 30_000;
 const SHUTDOWN_GRACE_MS = 1_000;
 
 const PAGE = (htmlShell as unknown as string)
-  .replace("/*!PICO*/", () => picoCss)
   .replace("/*!APP_CSS*/", () => appCss)
   .replace("/*!APP_JS*/", () => appJs as unknown as string);
 

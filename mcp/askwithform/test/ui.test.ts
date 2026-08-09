@@ -53,7 +53,7 @@ function mount(form: unknown) {
 }
 
 const root = () => document.getElementById("root")!;
-const submitButton = () => root().querySelector(".submit-bar button") as HTMLButtonElement;
+const submitButton = () => root().querySelector(".submit-bar .primary") as HTMLButtonElement;
 
 const simpleForm = {
   title: "askwithform",
@@ -76,6 +76,39 @@ describe("the page", () => {
     expect(root().querySelectorAll(".choice")).toHaveLength(2);
     expect(root().querySelectorAll(".other-field")).toHaveLength(2);
     expect(root().querySelector(".choice-description")!.textContent).toContain("A real page");
+    // The whole row is the label, so the description is clickable too.
+    expect(root().querySelector(".choice")!.tagName).toBe("LABEL");
+    expect(root().querySelector(".choice")!.querySelector("input")).not.toBeNull();
+  });
+
+  test("a Question is a fieldset with its text as the legend", () => {
+    mount(simpleForm);
+    const question = root().querySelector(".question")!;
+    expect(question.tagName).toBe("FIELDSET");
+    expect(question.querySelector(".question-text")!.tagName).toBe("LEGEND");
+  });
+
+  test("a field's label and control are siblings, and the label names it", () => {
+    // Regression: the textarea used to be nested inside its own label, so the
+    // gap between them could not exist and the pair had no shared structure.
+    mount(simpleForm);
+    const wrap = root().querySelector(".other-field") as HTMLElement;
+    const label = wrap.querySelector(".field-label") as HTMLLabelElement;
+    const control = wrap.querySelector(".field-control") as HTMLTextAreaElement;
+
+    expect(label.parentElement).toBe(wrap);
+    expect(control.parentElement).toBe(wrap);
+    expect(label.nextElementSibling).toBe(control);
+    expect(label.htmlFor).toBe(control.id);
+    expect(control.querySelector("label")).toBeNull();
+  });
+
+  test("a field's description is announced with its control", () => {
+    mount(simpleForm);
+    const wrap = root().querySelector(".other-field")!;
+    const control = wrap.querySelector(".field-control")!;
+    const note = wrap.querySelector(".field-description")!;
+    expect(control.getAttribute("aria-describedby")).toBe(note.id);
   });
 
   test("hides Other only when the Question opts out", () => {
@@ -163,7 +196,7 @@ describe("the page", () => {
 
   test("Cancel sends a cancel and nothing else", () => {
     const socket = mount(simpleForm);
-    const cancel = root().querySelectorAll(".submit-bar button")[1] as HTMLButtonElement;
+    const cancel = root().querySelector(".submit-bar .ghost") as HTMLButtonElement;
     cancel.click();
     expect(socket.sent).toEqual([{ type: "cancel" }]);
   });
@@ -195,7 +228,7 @@ describe("the page", () => {
     const link = questionText.querySelector("a") as HTMLAnchorElement;
     expect(link.getAttribute("href")).toBe("https://example.com/a?b=1&c=2");
     expect(link.getAttribute("rel")).toBe("noopener noreferrer");
-    expect(root().querySelector(".choice span")!.textContent).toBe("<img src=x onerror=alert(1)>");
+    expect(root().querySelector(".choice-label")!.textContent).toBe("<img src=x onerror=alert(1)>");
   });
 
   test("does not turn a javascript: URL into a link", () => {
