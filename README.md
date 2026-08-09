@@ -1,14 +1,16 @@
 # long-skills
 
-Long Nguyen's personal Claude skills. Installable as a Claude Code / Cowork plugin.
-
-Empty by design — add skills over time. Structure kept minimal and clean.
+Long Nguyen's personal Claude skills, and the MCP servers some of them call.
+Installable as a Claude Code / Cowork plugin.
 
 ## Layout
 
 ```
 .claude-plugin/plugin.json   Plugin manifest (name, version, author)
-skills/                      One folder per skill, each with a SKILL.md
+skills/                      One folder per skill, each with a SKILL.md — docs only
+mcp/                         One folder per MCP server, each self-contained
+docs/adr/                    Decisions that had a real alternative
+CONTEXT.md                   Ubiquitous language for this repo
 templates/SKILL.template.md  Copy this to start a new skill
 scripts/list-skills.sh       List every skill and its description
 CLAUDE.md                    Guidance for Claude when editing this repo
