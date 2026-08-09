@@ -1,0 +1,97 @@
+/*
+ * Semantic component classes over utility soup, all theming through custom
+ * properties. Light and dark come from Pico's own prefers-color-scheme
+ * handling — there is no switcher and nothing is persisted.
+ */
+
+:root {
+  --awf-gap: 1.5rem;
+  --awf-question-border: var(--pico-muted-border-color);
+  --awf-description-color: var(--pico-muted-color);
+  --awf-bar-bg: var(--pico-background-color);
+}
+
+main {
+  max-width: 48rem;
+}
+
+.form-title {
+  margin-bottom: 0.25rem;
+}
+
+.form-subtitle {
+  color: var(--awf-description-color);
+  font-size: 0.875rem;
+  margin-bottom: var(--awf-gap);
+}
+
+.question {
+  border: 1px solid var(--awf-question-border);
+  border-radius: var(--pico-border-radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: var(--awf-gap);
+}
+
+.question-text {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.question-hint {
+  color: var(--awf-description-color);
+  font-size: 0.8125rem;
+  margin-bottom: 0.75rem;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.choice > label {
+  margin-bottom: 0;
+}
+
+.choice-description {
+  display: block;
+  color: var(--awf-description-color);
+  font-size: 0.8125rem;
+  margin-left: 1.9em;
+}
+
+.other-field > label {
+  color: var(--awf-description-color);
+  font-size: 0.8125rem;
+}
+
+.other-field textarea {
+  margin-bottom: 0;
+}
+
+.submit-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  background: var(--awf-bar-bg);
+  border-top: 1px solid var(--awf-question-border);
+}
+
+.submit-bar button {
+  margin-bottom: 0;
+  width: auto;
+}
+
+.submit-bar .status {
+  color: var(--awf-description-color);
+  font-size: 0.8125rem;
+}
+
+.banner {
+  color: var(--pico-del-color);
+  font-size: 0.875rem;
+}
