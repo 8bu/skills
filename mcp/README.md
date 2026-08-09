@@ -11,4 +11,4 @@ it documents the calling convention rather than the implementation.
 
 | Server | What it does |
 | --- | --- |
-| [`askwithform`](askwithform/) | Asks a person a form of questions in their browser and returns the answers as markdown. |
+| [`grillwithform`](grillwithform/) | Asks a person a form of questions in their browser and returns the answers as markdown. |

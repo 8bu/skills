@@ -1,21 +1,21 @@
 ---
-name: askwithform
-description: "Put a whole round of questions to the person as a browser form via the ask_with_form MCP tool, and read the answers back. Use when the user asks for a form (\"put that in a form\", /askwithform), or when a grilling-style round produces several questions at once. Not for one or two quick questions."
+name: grillwithform
+description: "Put a whole round of questions to the person as a browser form via the grill_with_form MCP tool, and read the answers back. Use when the user asks for a form (\"put that in a form\", /grillwithform), or when a grilling-style round produces several questions at once. Not for one or two quick questions."
 ---
 
-# askwithform — ask a whole round of questions at once
+# grillwithform — ask a whole round of questions at once
 
-`ask_with_form` opens a form in the person's browser, waits, and returns their answers as
+`grill_with_form` opens a form in the person's browser, waits, and returns their answers as
 markdown. Unlimited questions, all mandatory, one Submit: either every answer comes back or
 none does.
 
-Vocabulary is in `CONTEXT.md`. The server lives in `mcp/askwithform/`.
+Vocabulary is in `CONTEXT.md`. The server lives in `mcp/grillwithform/`.
 
 ## When to use
 
 Use it when **a whole round of questions already exists at once**:
 
-- The user asks for one — "put that in a form", "give me a form", `/askwithform`.
+- The user asks for one — "put that in a form", "give me a form", `/grillwithform`.
 - A grilling, brainstorming, or spec-gathering round has produced several open questions
   together. A round of grilling *is* a form; send it as one.
 - More than a couple of questions, or options whose text is long enough to want reading

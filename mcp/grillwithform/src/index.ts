@@ -2,8 +2,8 @@
 /**
  * Two modes, one binary:
  *
- *   askwithform mcp                 stdio MCP server
- *   askwithform serve <form.json>   run one Ask from a file and print the result
+ *   grillwithform mcp                 stdio MCP server
+ *   grillwithform serve <form.json>   run one Ask from a file and print the result
  */
 
 import { renderOutcome } from "./answers-md.ts";
@@ -11,13 +11,13 @@ import { validateForm, ValidationError } from "./domain.ts";
 import { FormServer, openBrowser } from "./http-server.ts";
 import { runMcpServer } from "./mcp-server.ts";
 
-const USAGE = `askwithform — ask a person a form of questions in their browser
+const USAGE = `grillwithform — ask a person a form of questions in their browser
 
-  askwithform mcp                 run as an MCP server over stdio
-  askwithform serve <form.json>   present one form and print the answers as markdown
+  grillwithform mcp                 run as an MCP server over stdio
+  grillwithform serve <form.json>   present one form and print the answers as markdown
 
 Register with Claude Code:
-  claude mcp add askwithform -- /path/to/askwithform mcp`;
+  claude mcp add grillwithform -- /path/to/grillwithform mcp`;
 
 async function serveOnce(path: string): Promise<number> {
   let form;
@@ -30,7 +30,7 @@ async function serveOnce(path: string): Promise<number> {
 
   const forms = new FormServer();
   const ask = forms.open(form);
-  console.error(`askwithform: waiting on ${ask.url}`);
+  console.error(`grillwithform: waiting on ${ask.url}`);
   openBrowser(ask.url);
 
   const outcome = await ask.outcome;
@@ -49,7 +49,7 @@ switch (mode) {
 
   case "serve":
     if (!argument) {
-      console.error("askwithform serve needs a path to a form JSON file.\n\n" + USAGE);
+      console.error("grillwithform serve needs a path to a form JSON file.\n\n" + USAGE);
       process.exit(2);
     }
     process.exit(await serveOnce(argument));

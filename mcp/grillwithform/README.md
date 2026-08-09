@@ -1,4 +1,4 @@
-# askwithform
+# grillwithform
 
 An MCP server that puts a form of questions in front of a person in their browser and hands
 the answers back to the assistant as markdown.
@@ -7,7 +7,7 @@ Unlimited questions, every one of them mandatory, one Submit. Either all the ans
 back or none do.
 
 See [`../../CONTEXT.md`](../../CONTEXT.md) for the vocabulary (Ask, Form, Question, Choice,
-Other, Answer, Outcome) and [`../../docs/askwithform-design.md`](../../docs/askwithform-design.md)
+Other, Answer, Outcome) and [`../../docs/grillwithform-design.md`](../../docs/grillwithform-design.md)
 for the design this implements.
 
 ## Build
@@ -15,19 +15,19 @@ for the design this implements.
 ```sh
 bun install
 bun test
-bun run build        # → ./askwithform, a single self-contained binary
+bun run build        # → ./grillwithform, a single self-contained binary
 ```
 
 ## Register with Claude Code
 
 ```sh
-claude mcp add askwithform -- /absolute/path/to/mcp/askwithform/askwithform mcp
+claude mcp add grillwithform -- /absolute/path/to/mcp/grillwithform/grillwithform mcp
 ```
 
 ## Run one form without an MCP client
 
 ```sh
-./askwithform serve form.json
+./grillwithform serve form.json
 ```
 
 Same server code, in-process. The answers print to stdout as markdown; the exit status is
@@ -35,7 +35,7 @@ Same server code, in-process. The answers print to stdout as markdown; the exit 
 
 ```json
 {
-  "title": "askwithform",
+  "title": "grillwithform",
   "questions": [
     {
       "id": "ui",
@@ -53,7 +53,7 @@ Same server code, in-process. The answers print to stdout as markdown; the exit 
 
 ## The tool
 
-`ask_with_form` takes:
+`grill_with_form` takes:
 
 | Field | Meaning |
 | --- | --- |
@@ -72,10 +72,10 @@ act on. Nothing is auto-repaired, so a broken form never reaches the person.
 The answers come back per question, echoing only what was chosen:
 
 ```markdown
-# Ask: askwithform
+# Ask: grillwithform
 
 - **[ui]** Where does the UI render? → **Browser**
-- **[name]** What should it be called? → *other:* "askwithform"
+- **[name]** What should it be called? → *other:* "grillwithform"
 ```
 
 Cancelling, or closing the tab and not coming back within 30 seconds, ends the ask with a
@@ -93,4 +93,4 @@ offline and no third party ever sees a form. Light and dark follow the OS settin
 choice text is escaped before a small markdown subset is applied, so no unescaped assistant
 output reaches the DOM.
 
-Set `ASKWITHFORM_NO_BROWSER=1` to skip opening a browser; the URL is always printed to stderr.
+Set `GRILLWITHFORM_NO_BROWSER=1` to skip opening a browser; the URL is always printed to stderr.

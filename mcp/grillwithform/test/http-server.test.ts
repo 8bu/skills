@@ -10,7 +10,7 @@ afterAll(async () => await forms.stop());
 
 const makeForm = (over: Record<string, unknown> = {}) =>
   validateForm({
-    title: "askwithform",
+    title: "grillwithform",
     questions: [
       { id: "ui", text: "Where?", type: "single", choices: [{ label: "Browser" }] },
       { id: "name", text: "Called?", type: "single", choices: [] },
@@ -49,7 +49,7 @@ describe("FormServer", () => {
     const response = await fetch(ask.url);
     const html = await response.text();
     expect(response.status).toBe(200);
-    expect(html).toContain("<title>askwithform</title>");
+    expect(html).toContain("<title>grillwithform</title>");
     // Styles and script are inlined, so the page loads nothing from anywhere.
     expect(html).toContain("--ring:");
     expect(html).not.toMatch(/<(link|script|img)[^>]+(src|href)=/);
@@ -71,7 +71,7 @@ describe("FormServer", () => {
         type: "submit",
         answers: {
           ui: { choices: ["Browser"], other: "" },
-          name: { choices: [], other: "askwithform" },
+          name: { choices: [], other: "grillwithform" },
         },
       })
     );
@@ -81,7 +81,7 @@ describe("FormServer", () => {
       kind: "submitted",
       answers: {
         ui: { choices: ["Browser"], other: null },
-        name: { choices: [], other: "askwithform" },
+        name: { choices: [], other: "grillwithform" },
       },
     } satisfies Outcome);
   });
@@ -101,7 +101,7 @@ describe("FormServer", () => {
     page.socket.send(
       JSON.stringify({
         type: "submit",
-        answers: { ui: { choices: ["Browser"] }, name: { other: "askwithform" } },
+        answers: { ui: { choices: ["Browser"] }, name: { other: "grillwithform" } },
       })
     );
     expect((await ask.outcome).kind).toBe("submitted");
@@ -174,7 +174,7 @@ describe("FormServer", () => {
     page.socket.send(
       JSON.stringify({
         type: "submit",
-        answers: { ui: { choices: ["Browser"] }, name: { other: "askwithform" } },
+        answers: { ui: { choices: ["Browser"] }, name: { other: "grillwithform" } },
       })
     );
 

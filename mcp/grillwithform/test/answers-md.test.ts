@@ -4,7 +4,7 @@ import { renderOutcome } from "../src/answers-md.ts";
 import { validateForm } from "../src/domain.ts";
 
 const form = validateForm({
-  title: "askwithform",
+  title: "grillwithform",
   questions: [
     { id: "ui", text: "Where does the UI render?", type: "single", choices: [{ label: "Browser" }] },
     {
@@ -24,17 +24,17 @@ describe("renderOutcome", () => {
       answers: {
         ui: { choices: ["Browser"], other: null },
         types: { choices: ["Single-select", "Free text"], other: "also multi" },
-        name: { choices: [], other: "askwithform" },
+        name: { choices: [], other: "grillwithform" },
       },
     });
 
     expect(markdown).toBe(
       [
-        "# Ask: askwithform",
+        "# Ask: grillwithform",
         "",
         "- **[ui]** Where does the UI render? → **Browser**",
         '- **[types]** Which types ship? → **Single-select**; **Free text** + *other:* "also multi"',
-        '- **[name]** What should it be called? → *other:* "askwithform"',
+        '- **[name]** What should it be called? → *other:* "grillwithform"',
       ].join("\n")
     );
   });
@@ -42,7 +42,7 @@ describe("renderOutcome", () => {
   test("returns a one-line body and no Answers when Cancelled", () => {
     const markdown = renderOutcome(form, { kind: "cancelled" });
     expect(markdown).toBe(
-      "# Ask: askwithform\n\nCancelled — the person declined to answer. No Answers were returned."
+      "# Ask: grillwithform\n\nCancelled — the person declined to answer. No Answers were returned."
     );
   });
 
@@ -55,13 +55,13 @@ describe("renderOutcome", () => {
 
   test("collapses newlines in Question text and Other so each Answer is one line", () => {
     const wrapped = validateForm({
-      title: "askwithform",
+      title: "grillwithform",
       questions: [{ id: "q", text: "Line one\nline two", type: "single", choices: [] }],
     });
     const markdown = renderOutcome(wrapped, {
       kind: "submitted",
       answers: { q: { choices: [], other: "first\nsecond" } },
     });
-    expect(markdown).toBe('# Ask: askwithform\n\n- **[q]** Line one line two → *other:* "first second"');
+    expect(markdown).toBe('# Ask: grillwithform\n\n- **[q]** Line one line two → *other:* "first second"');
   });
 });

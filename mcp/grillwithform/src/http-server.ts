@@ -242,7 +242,7 @@ const gone = () =>
 
 /** Opens the person's browser. Failure is survivable — the URL is on stderr. */
 export function openBrowser(url: string): void {
-  if (process.env.ASKWITHFORM_NO_BROWSER) return;
+  if (process.env.GRILLWITHFORM_NO_BROWSER) return;
   const command =
     process.platform === "darwin"
       ? ["open", url]

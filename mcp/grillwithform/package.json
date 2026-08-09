@@ -1,11 +1,11 @@
 {
-  "name": "askwithform",
+  "name": "grillwithform",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "module": "src/index.ts",
   "scripts": {
-    "build": "bun build --compile --minify src/index.ts --outfile askwithform",
+    "build": "bun build --compile --minify src/index.ts --outfile grillwithform",
     "start": "bun run src/index.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"

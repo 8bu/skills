@@ -1,5 +1,5 @@
 /**
- * The stdio MCP server. One tool, `ask_with_form`, which blocks until the Ask
+ * The stdio MCP server. One tool, `grill_with_form`, which blocks until the Ask
  * reaches an Outcome and returns the Answers as markdown.
  */
 
@@ -86,7 +86,7 @@ export async function runMcpServer(): Promise<void> {
   const forms = new FormServer();
 
   const server = new Server(
-    { name: "askwithform", version: "0.1.0" },
+    { name: "grillwithform", version: "0.1.0" },
     { capabilities: { tools: {} } }
   );
 
@@ -97,7 +97,7 @@ export async function runMcpServer(): Promise<void> {
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
       {
-        name: "ask_with_form",
+        name: "grill_with_form",
         description: TOOL_DESCRIPTION,
         inputSchema: INPUT_SCHEMA,
       },
@@ -105,7 +105,7 @@ export async function runMcpServer(): Promise<void> {
   }));
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
-    if (request.params.name !== "ask_with_form") {
+    if (request.params.name !== "grill_with_form") {
       return {
         isError: true,
         content: [{ type: "text", text: `Unknown tool "${request.params.name}".` }],
@@ -125,7 +125,7 @@ export async function runMcpServer(): Promise<void> {
     }
 
     const ask = forms.open(form);
-    console.error(`askwithform: waiting on ${ask.url}`);
+    console.error(`grillwithform: waiting on ${ask.url}`);
     openBrowser(ask.url);
 
     const outcome = await ask.outcome;

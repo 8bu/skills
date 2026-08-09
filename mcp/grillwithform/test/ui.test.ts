@@ -56,7 +56,7 @@ const root = () => document.getElementById("root")!;
 const submitButton = () => root().querySelector(".submit-bar .primary") as HTMLButtonElement;
 
 const simpleForm = {
-  title: "askwithform",
+  title: "grillwithform",
   questions: [
     {
       id: "ui",
@@ -131,7 +131,7 @@ describe("the page", () => {
     expect(submitButton().disabled).toBe(true); // "name" is still unanswered
 
     const textarea = root().querySelector("#q-name-other") as HTMLTextAreaElement;
-    textarea.value = "askwithform";
+    textarea.value = "grillwithform";
     textarea.dispatchEvent(new Event("input"));
     expect(submitButton().disabled).toBe(false);
 
@@ -141,7 +141,7 @@ describe("the page", () => {
         type: "submit",
         answers: {
           ui: { choices: ["Browser"], other: "" },
-          name: { choices: [], other: "askwithform" },
+          name: { choices: [], other: "grillwithform" },
         },
       },
     ]);
