@@ -11,7 +11,7 @@
   "homepage": "https://github.com/8bu/skills#readme",
   "repository": "https://github.com/8bu/skills",
   "license": "MIT",
-  "keywords": ["form", "questions", "mcp", "vietnamese", "documentation", "ste"],
+  "keywords": ["agent-skills", "skills", "mcp", "mcp-server", "ai-agents"],
   "mcpServers": {
     "grillwithform": {
       "command": "npx",

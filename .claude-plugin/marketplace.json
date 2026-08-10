@@ -23,7 +23,7 @@
       "repository": "https://github.com/8bu/skills",
       "license": "MIT",
       "category": "productivity",
-      "keywords": ["form", "questions", "mcp", "vietnamese", "documentation", "ste"]
+      "keywords": ["agent-skills", "skills", "mcp", "mcp-server", "ai-agents"]
     }
   ]
 }
