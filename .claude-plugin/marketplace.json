@@ -14,7 +14,7 @@
       "source": "./",
       "displayName": "8bu Skills",
       "description": "Shows a full set of questions as a form in your browser. Also writes Vietnamese computer-science documents to the TVKTĐGH/KHMT standard.",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "author": {
         "name": "8bu",
         "email": "8bu@users.noreply.github.com"

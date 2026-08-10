@@ -1,6 +1,7 @@
 ---
 name: grillwithform
 description: "Shows a full set of questions to the person as a browser form with the grill_with_form MCP tool, then reads the answers back. Use it when the user asks for a form (\"put that in a form\", /grillwithform), or when a grilling session produces several questions at the same time. Do not use it for one or two quick questions."
+license: MIT
 ---
 
 # grillwithform — ask a full set of questions at one time

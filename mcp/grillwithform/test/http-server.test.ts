@@ -183,6 +183,25 @@ describe("FormServer", () => {
     expect((await page.next()).type).toBe("done");
   });
 
+  test("abandon() ends the Ask and tells the page", async () => {
+    const ask = await forms.open(makeForm());
+    const page = await openPage(ask.url);
+
+    ask.abandon();
+    expect(await ask.outcome).toEqual({ kind: "abandoned" });
+    expect((await page.next()).type).toBe("done");
+  });
+
+  test("abandon() after an Outcome changes nothing", async () => {
+    const ask = await forms.open(makeForm());
+    const page = await openPage(ask.url);
+    page.socket.send(JSON.stringify({ type: "cancel" }));
+    expect(await ask.outcome).toEqual({ kind: "cancelled" });
+
+    ask.abandon();
+    expect(await ask.outcome).toEqual({ kind: "cancelled" });
+  });
+
   test("an unknown or finished Ask is not readable", async () => {
     expect((await fetch(`${forms.origin}/form/nope`)).status).toBe(404);
     expect((await fetch(`${forms.origin}/`)).status).toBe(404);

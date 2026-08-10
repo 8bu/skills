@@ -1,7 +1,7 @@
 {
   "name": "8bu-skills",
   "displayName": "8bu Skills",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Shows a full set of questions as a form in your browser. Also writes Vietnamese computer-science documents to the TVKTĐGH/KHMT standard.",
   "author": {
     "name": "8bu",

@@ -1,6 +1,7 @@
 ---
 name: stv
 description: "Áp dụng chuẩn TVKTĐGH/KHMT khi viết hoặc rà tài liệu KHMT tiếng Việt — rút gọn câu, câu chủ động, giữ thuật ngữ tiếng Anh theo 3 tầng, kiểm tra tuân thủ. Dùng khi viết/viết lại/soát doc, commit message, README, runbook, code review, cảnh báo, API/ML, hoặc gõ /stv."
+license: MIT
 ---
 
 # STV — Viết tài liệu KHMT tiếng Việt theo chuẩn TVKTĐGH/KHMT

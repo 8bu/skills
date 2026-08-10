@@ -45,6 +45,8 @@ export interface AskHandle {
   id: string;
   url: string;
   outcome: Promise<Outcome>;
+  /** Ends the Ask as Abandoned. Does nothing once the Ask has an Outcome. */
+  abandon(): void;
 }
 
 const newAskId = (): string => randomBytes(16).toString("base64url");
@@ -117,7 +119,12 @@ export class FormServer {
     }
 
     this.asks.set(id, state);
-    return { id, url: `${this.origin}/form/${id}`, outcome };
+    return {
+      id,
+      url: `${this.origin}/form/${id}`,
+      outcome,
+      abandon: () => this.settle(state, { kind: "abandoned" }),
+    };
   }
 
   /**

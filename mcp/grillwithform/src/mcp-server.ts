@@ -11,6 +11,13 @@ import { renderOutcome } from "./answers-md.ts";
 import { validateForm, ValidationError } from "./domain.ts";
 import { FormServer, openBrowser } from "./http-server.ts";
 
+/**
+ * How often to tell the client that the wait is deliberate. It must stay well
+ * under the idle window of the client: Claude Code allows 30 min on stdio and
+ * 5 min on HTTP. The environment variable exists so tests do not wait a minute.
+ */
+const HEARTBEAT_MS = Number(process.env.GRILLWITHFORM_HEARTBEAT_MS ?? 60_000);
+
 const TOOL_DESCRIPTION = [
   "Present a form of questions in the person's browser and wait for their answers.",
   "",
@@ -104,7 +111,7 @@ export async function runMcpServer(): Promise<void> {
     ],
   }));
 
-  server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
     if (request.params.name !== "grill_with_form") {
       return {
         isError: true,
@@ -128,8 +135,42 @@ export async function runMcpServer(): Promise<void> {
     console.error(`grillwithform: waiting on ${ask.url}`);
     openBrowser(ask.url);
 
-    const outcome = await ask.outcome;
-    return { content: [{ type: "text", text: renderOutcome(form, outcome) }] };
+    // A person can take a long time over a form, and a client that hears
+    // nothing treats the call as stalled: Claude Code aborts an idle stdio call
+    // after 30 minutes. A heartbeat says the wait is deliberate. It only goes
+    // out when the client asked for progress by sending a token.
+    const progressToken = request.params._meta?.progressToken;
+    let beats = 0;
+    const heartbeat =
+      progressToken === undefined
+        ? undefined
+        : setInterval(() => {
+            void extra
+              .sendNotification({
+                method: "notifications/progress",
+                params: {
+                  progressToken,
+                  progress: ++beats,
+                  message: "Waiting for the person to answer the form.",
+                },
+              })
+              .catch(() => {
+                // The client went away. The Outcome still stands.
+              });
+          }, HEARTBEAT_MS);
+
+    // If the client gives up on the call, end the Ask too. Otherwise the tab
+    // stays open over a server that nobody is listening to any more.
+    const giveUp = () => ask.abandon();
+    extra.signal.addEventListener("abort", giveUp, { once: true });
+
+    try {
+      const outcome = await ask.outcome;
+      return { content: [{ type: "text", text: renderOutcome(form, outcome) }] };
+    } finally {
+      clearInterval(heartbeat);
+      extra.signal.removeEventListener("abort", giveUp);
+    }
   });
 
   await server.connect(new StdioServerTransport());

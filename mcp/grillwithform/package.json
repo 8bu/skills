@@ -1,6 +1,6 @@
 {
   "name": "grillwithform",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "An MCP server. It shows a form of questions to a person in their browser and returns the answers.",
   "keywords": ["mcp", "mcp-server", "claude", "form", "prompt", "ai"],
   "license": "MIT",
