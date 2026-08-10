@@ -1,11 +1,17 @@
 # Repository guidance
 
-This repository holds personal Claude skills. It also holds the MCP servers that some skills
+`AGENTS.md` is a symbolic link to this file. Both names hold the same instructions.
+
+This repository holds personal agent skills. It also holds the MCP servers that some skills
 call. The repository is one Claude Code plugin, and it is also its own marketplace.
 
 ## Skills — `skills/`
 
 - The folder `skills/` holds documents only. No code runs from it.
+- Keep the frontmatter to the six fields of the [Agent Skills](https://agentskills.io)
+  standard: `name`, `description`, `allowed-tools`, `compatibility`, `license`, and
+  `metadata`. A field that only Claude Code knows makes the skill fail validation on
+  claude.ai and in the Skills API.
 - Each skill is in `skills/<name>/SKILL.md`.
 - `SKILL.md` starts with YAML frontmatter. It has two fields: `name` in kebab-case, which
   matches the folder name, and `description`, which states when Claude uses the skill.
