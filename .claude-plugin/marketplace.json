@@ -6,14 +6,14 @@
     "url": "https://github.com/8bu"
   },
   "metadata": {
-    "description": "8bu's personal Claude skills, and the MCP servers that some skills call."
+    "description": "8bu's personal agent skills, and the MCP servers that some skills call."
   },
   "plugins": [
     {
       "name": "8bu-skills",
       "source": "./",
       "displayName": "8bu Skills",
-      "description": "Shows a full set of questions as a form in your browser. Also writes Vietnamese computer-science documents to the TVKTĐGH/KHMT standard.",
+      "description": "Personal agent skills, and the MCP servers they call.",
       "version": "0.2.0",
       "author": {
         "name": "8bu",
