@@ -7,7 +7,6 @@ call. The repository is one Claude Code plugin, and it is also its own marketpla
 
 ## Skills — `skills/`
 
-- The folder `skills/` holds documents only. No code runs from it.
 - Keep the frontmatter to the six fields of the [Agent Skills](https://agentskills.io)
   standard: `name`, `description`, `allowed-tools`, `compatibility`, `license`, and
   `metadata`. A field that only Claude Code knows makes the skill fail validation on
