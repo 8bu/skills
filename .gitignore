@@ -2,5 +2,8 @@
 *.swp
 *~
 
+# Installed by the skill on its first run. The lockfile is tracked.
+node_modules/
+
 # Internal design notes and decision records. Not for the public repo.
 docs/

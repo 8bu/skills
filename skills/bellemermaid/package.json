@@ -1,0 +1,14 @@
+{
+  "name": "bellemermaid-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Renders Mermaid diagrams to SVG or ASCII for the bellemermaid skill.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "beautiful-mermaid": "~1.1.3"
+  }
+}
