@@ -32,9 +32,10 @@ site builders render a ` ```mermaid ` block. Write the block, and render nothing
    renders, and the types that it refuses. `mindmap`, `pie`, and `gantt` all fail.
 2. **Write the source to a file.** Use the `.mmd` extension.
 3. **Check the source.** The library accepts a bad body without an error, so use a real
-   checker:
+   checker. Use `vendor/maid.cjs` when that file is present. If it is absent, use npx:
    ```bash
-   npx -y @probelabs/maid diagram.mmd
+   node vendor/maid.cjs diagram.mmd      # the Cowork build
+   npx -y @probelabs/maid diagram.mmd    # each other place
    ```
    It prints `Valid`, or an error with a code, a line, and a column.
 4. **Look at the shape first.** Render ASCII and read it:
@@ -142,9 +143,25 @@ other files still render.
 
 An error goes to stderr. With `--json`, it goes there as one line of JSON.
 
+## Other places than Claude Code
+
+Claude Cowork and claude.ai take a skill as a zip file. Those machines give no npm access,
+and they start again for each session. Make a zip that holds each dependency:
+
+```bash
+./scripts/build-cowork.sh
+```
+
+It writes `dist/bellemermaid-cowork.zip`. In Cowork, go to **Customize > Skills** and upload
+it. A skill does not move between products, so upload it one time for each product.
+
+The build puts two files in `vendor/`. The scripts read `vendor/` before they read
+`node_modules/`, so the same source works in each place.
+
 ## Files
 
 - `scripts/render.mjs` — the renderer.
+- `scripts/build-cowork.sh` — makes the zip for Cowork and for claude.ai.
 - `scripts/themes.mjs` — lists the themes. `--json` and `--markdown` change the output.
 - `references/THEMES.md` — generated. Make it again with
   `node scripts/themes.mjs --markdown > references/THEMES.md`.

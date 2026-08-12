@@ -53,6 +53,11 @@ function installDependencies() {
 }
 
 async function loadLibrary() {
+  // The Cowork build puts one bundled file here. That environment gives no npm access,
+  // so the vendor file comes first. See scripts/build-cowork.sh.
+  const vendored = join(skillRoot, 'vendor', 'beautiful-mermaid.mjs');
+  if (existsSync(vendored)) return import(vendored);
+
   const local = join(skillRoot, 'node_modules', 'beautiful-mermaid', 'dist', 'index.js');
   if (existsSync(local)) return import(local);
   installDependencies();

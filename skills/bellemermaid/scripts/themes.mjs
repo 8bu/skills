@@ -7,14 +7,17 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const skillRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+// The Cowork build supplies the vendor file. A normal install supplies node_modules.
+const vendored = join(skillRoot, 'vendor', 'beautiful-mermaid.mjs');
 const local = join(skillRoot, 'node_modules', 'beautiful-mermaid', 'dist', 'index.js');
+const source = [vendored, local].find((p) => existsSync(p));
 
-if (!existsSync(local)) {
+if (!source) {
   process.stderr.write(`[bellemermaid] beautiful-mermaid is absent. Run: npm ci --prefix ${skillRoot}\n`);
   process.exit(4);
 }
 
-const { THEMES } = await import(local);
+const { THEMES } = await import(source);
 const names = Object.keys(THEMES).sort();
 const isDark = (hex) => {
   const n = Number.parseInt(hex.replace('#', ''), 16);
