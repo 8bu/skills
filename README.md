@@ -13,8 +13,8 @@ in Claude Code, Codex, Cursor, Antigravity, and other agents that read `SKILL.md
 ## Install
 
 There are two parts. The **skills** are documents that tell your agent what to do. The
-**MCP server** is the program that shows the form. The `grillwithform` skill needs the
-server; the `stv` skill does not.
+**MCP server** is the program that shows the form. Only the `grillwithform` skill needs
+the server; the other skills do not.
 
 You must have Node 20 or later for the server.
 
