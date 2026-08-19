@@ -30,7 +30,7 @@ This installs the skills and registers the MCP server. You do not need the steps
 ### Other agents: the skills
 
 ```sh
-npx skills add 8bu/skills                        # both skills
+npx skills add 8bu/skills                        # every skill
 npx skills add 8bu/skills --skill grillwithform  # one skill
 ```
 
