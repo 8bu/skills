@@ -6,6 +6,7 @@ in Claude Code, Codex, Cursor, Antigravity, and other agents that read `SKILL.md
 
 | Skill | Function |
 | --- | --- |
+| [`bellemermaid`](skills/bellemermaid/SKILL.md) | Renders a Mermaid diagram to a themed SVG file or to ASCII art in the terminal. |
 | [`grillwithform`](skills/grillwithform/SKILL.md) | Shows a full set of questions as a form in your browser. Reads your answers back. It calls the [`grillwithform`](mcp/grillwithform) MCP server. |
 | [`stv`](skills/stv/SKILL.md) | Writes and checks Vietnamese computer-science documents. It applies the TVKTĐGH/KHMT standard. |
 
