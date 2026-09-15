@@ -30,13 +30,18 @@ plugin, and it is also its own marketplace.
 
 ## OMP extensions — `extensions/`
 
-- Each extension is in `extensions/<name>/index.ts`. The folder name is the extension id
-  that `disabledExtensions` uses: `extension-module:<name>`.
+- Each extension is in `extensions/<name>/`. It is an OMP plugin package: a `package.json`
+  with an `omp.extensions` field, and an `index.ts`. The folder name is the package name.
 - Keep each extension complete in itself: one `index.ts`, no dependencies outside what
   `@oh-my-pi/pi-coding-agent` gives it. Type-only imports from that package are fine.
 - A header comment in `index.ts` states what the extension does, and what it does not touch.
-- To use an extension, put a symbolic link to its folder in `~/.omp/agent/extensions/`.
-  The plugin does not distribute extensions.
+- `.omp-plugin/marketplace.json` is the OMP marketplace catalogue. Its name is `skills`.
+  A name that starts with a digit does not work: OMP reads it as an npm version. Register
+  each extension there with `"source": "./extensions/<name>"`.
+- When the code of an extension changes, raise the version in two places: the
+  `package.json` of the extension, and its entry in `.omp-plugin/marketplace.json`.
+- `bun dev:ext` links the local copy of `prompt-repeat` into OMP. Ctrl+C restores the
+  marketplace copy. The Claude Code plugin does not distribute extensions.
 
 ## Distribution — `.claude-plugin/`
 

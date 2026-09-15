@@ -10,7 +10,7 @@ Cursor, Antigravity, and other agents that read `SKILL.md`.
 | Folder | Holds | Used by |
 | --- | --- | --- |
 | `skills/` | One folder for each skill: a `SKILL.md` document, and its helper scripts. | Any agent that reads `SKILL.md`. |
-| `extensions/` | One folder for each OMP (Oh My Pi) extension: a single `index.ts`. | OMP only. Not part of the plugin. |
+| `extensions/` | One folder for each OMP (Oh My Pi) extension. Each one is an OMP plugin package: a `package.json` and an `index.ts`. | OMP only. Not part of the plugin. |
 | `mcp/` | One folder for each MCP server. Each one is an independent npm package. | Any MCP client. |
 | `scripts/` | Maintenance scripts for this repository. | You. |
 | `templates/` | Files to copy when you start a new skill. | You. |
@@ -29,15 +29,17 @@ Cursor, Antigravity, and other agents that read `SKILL.md`.
 | --- | --- |
 | [`prompt-repeat`](extensions/prompt-repeat/index.ts) | Sends the task text twice to `deepseek/deepseek-flash` when it runs a `task` subagent. Other models, other agents, and the session history stay as they are. |
 
-To use an extension, link its folder into the OMP user extensions folder. OMP loads it at
-the next start:
+This repository is an OMP marketplace. The catalogue is
+[`.omp-plugin/marketplace.json`](.omp-plugin/marketplace.json), and its name is `skills`.
 
 ```sh
-ln -s "$PWD/extensions/prompt-repeat" ~/.omp/agent/extensions/prompt-repeat
+omp plugin marketplace add 8bu/skills
+omp plugin discover skills
+omp plugin install prompt-repeat@skills
 ```
 
-To switch it off and keep the link, add `extension-module:prompt-repeat` to
-`disabledExtensions` in `~/.omp/agent/config.yml`. To remove it, delete the link.
+For local development with `bun dev:ext`, read
+[`extensions/prompt-repeat/README.md`](extensions/prompt-repeat/README.md).
 
 ## Install
 

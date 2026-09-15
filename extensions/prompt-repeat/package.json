@@ -1,0 +1,20 @@
+{
+  "name": "prompt-repeat",
+  "version": "0.1.0",
+  "description": "Sends the task text twice to deepseek/deepseek-flash when it runs a task subagent.",
+  "license": "MIT",
+  "author": {
+    "name": "8bu",
+    "email": "8bu@users.noreply.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/8bu/skills.git",
+    "directory": "extensions/prompt-repeat"
+  },
+  "type": "module",
+  "private": true,
+  "omp": {
+    "extensions": ["./index.ts"]
+  }
+}

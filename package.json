@@ -1,0 +1,7 @@
+{
+  "name": "8bu-skills",
+  "private": true,
+  "scripts": {
+    "dev:ext": "bun scripts/dev-ext.ts"
+  }
+}

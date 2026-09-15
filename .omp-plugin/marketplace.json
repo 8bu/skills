@@ -1,0 +1,26 @@
+{
+  "name": "skills",
+  "owner": {
+    "name": "skills",
+    "email": "8bu@users.noreply.github.com"
+  },
+  "metadata": {
+    "description": "8bu's OMP extensions.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "prompt-repeat",
+      "source": "./extensions/prompt-repeat",
+      "description": "Sends the task text twice to deepseek/deepseek-flash when it runs a task subagent.",
+      "version": "0.1.0",
+      "author": {
+        "name": "8bu"
+      },
+      "homepage": "https://github.com/8bu/skills/tree/main/extensions/prompt-repeat#readme",
+      "repository": "https://github.com/8bu/skills",
+      "license": "MIT",
+      "keywords": ["omp", "extension", "deepseek"]
+    }
+  ]
+}

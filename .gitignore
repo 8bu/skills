@@ -10,3 +10,6 @@ docs/
 
 # Built by scripts/build-cowork.sh. Not tracked.
 dist/
+
+# Recovery state for `bun dev:ext`. Not tracked.
+.cache/
