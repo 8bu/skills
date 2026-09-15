@@ -1,14 +1,43 @@
 # 8bu-skills
 
-8bu's personal agent skills. This repository also holds the MCP servers that some skills
-call. The skills follow the [Agent Skills](https://agentskills.io) standard, so they work
-in Claude Code, Codex, Cursor, Antigravity, and other agents that read `SKILL.md`.
+8bu's reusable tooling for AI agents: skills, the MCP servers that some skills call, OMP
+extensions, and the scripts and templates that maintain them. The skills follow the
+[Agent Skills](https://agentskills.io) standard, so they work in Claude Code, Codex,
+Cursor, Antigravity, and other agents that read `SKILL.md`.
+
+## What is where
+
+| Folder | Holds | Used by |
+| --- | --- | --- |
+| `skills/` | One folder for each skill: a `SKILL.md` document, and its helper scripts. | Any agent that reads `SKILL.md`. |
+| `extensions/` | One folder for each OMP (Oh My Pi) extension: a single `index.ts`. | OMP only. Not part of the plugin. |
+| `mcp/` | One folder for each MCP server. Each one is an independent npm package. | Any MCP client. |
+| `scripts/` | Maintenance scripts for this repository. | You. |
+| `templates/` | Files to copy when you start a new skill. | You. |
+
+## Skills
 
 | Skill | Function |
 | --- | --- |
 | [`bellemermaid`](skills/bellemermaid/SKILL.md) | Renders a Mermaid diagram to a themed SVG file or to ASCII art in the terminal. |
 | [`grillwithform`](skills/grillwithform/SKILL.md) | Shows a full set of questions as a form in your browser. Reads your answers back. It calls the [`grillwithform`](mcp/grillwithform) MCP server. |
 | [`stv`](skills/stv/SKILL.md) | Writes and checks Vietnamese computer-science documents. It applies the TVKTĐGH/KHMT standard. |
+
+## OMP extensions
+
+| Extension | Function |
+| --- | --- |
+| [`prompt-repeat`](extensions/prompt-repeat/index.ts) | Sends the task text twice to `deepseek/deepseek-flash` when it runs a `task` subagent. Other models, other agents, and the session history stay as they are. |
+
+To use an extension, link its folder into the OMP user extensions folder. OMP loads it at
+the next start:
+
+```sh
+ln -s "$PWD/extensions/prompt-repeat" ~/.omp/agent/extensions/prompt-repeat
+```
+
+To switch it off and keep the link, add `extension-module:prompt-repeat` to
+`disabledExtensions` in `~/.omp/agent/config.yml`. To remove it, delete the link.
 
 ## Install
 
@@ -89,7 +118,8 @@ npx -y grillwithform mcp
 ```
 .claude-plugin/marketplace.json  The catalogue. This repository is one plugin.
 .claude-plugin/plugin.json       The plugin manifest: the skills and the MCP server.
-skills/                          One folder for each skill. Documents only.
+skills/                          One folder for each skill. Documents and helper scripts.
+extensions/                      One folder for each OMP extension. One index.ts each.
 mcp/                             One folder for each MCP server. Each one is independent.
 CONTEXT.md                       The words this repository uses, and their meanings.
 templates/SKILL.template.md      Copy this file to start a new skill.

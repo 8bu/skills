@@ -1,5 +1,5 @@
 /**
- * deepseek-repeat-task
+ * prompt-repeat — an OMP extension.
  *
  * For `task` subagents that run on `deepseek/deepseek-flash` (any thinking
  * level), send the latest user/task message twice to the model:

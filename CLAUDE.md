@@ -2,8 +2,9 @@
 
 `AGENTS.md` is a symbolic link to this file. Both names hold the same instructions.
 
-This repository holds personal agent skills. It also holds the MCP servers that some skills
-call. The repository is one Claude Code plugin, and it is also its own marketplace.
+This repository holds reusable tooling for AI agents: skills, the MCP servers that some
+skills call, OMP extensions, scripts, and templates. The repository is one Claude Code
+plugin, and it is also its own marketplace.
 
 ## Skills — `skills/`
 
@@ -26,6 +27,16 @@ call. The repository is one Claude Code plugin, and it is also its own marketpla
   describes the code in `mcp/<name>/README.md`.
 - A server that npm publishes must run on Node 20 or later. Bun runs and bundles the source,
   but the published file must not need Bun.
+
+## OMP extensions — `extensions/`
+
+- Each extension is in `extensions/<name>/index.ts`. The folder name is the extension id
+  that `disabledExtensions` uses: `extension-module:<name>`.
+- Keep each extension complete in itself: one `index.ts`, no dependencies outside what
+  `@oh-my-pi/pi-coding-agent` gives it. Type-only imports from that package are fine.
+- A header comment in `index.ts` states what the extension does, and what it does not touch.
+- To use an extension, put a symbolic link to its folder in `~/.omp/agent/extensions/`.
+  The plugin does not distribute extensions.
 
 ## Distribution — `.claude-plugin/`
 
